@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    parameters {
+        string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Branch to checkout')
+    }
+
     stages {
         stage('Clean Workspace') {
             steps {
@@ -11,8 +15,8 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                echo 'Checking out source code...'
-                git branch: 'main', url: 'https://github.com/spring-projects/spring-petclinic.git'
+                echo "Checking out branch: ${params.BRANCH_NAME}..."
+                git branch: "${params.BRANCH_NAME}", url: 'https://github.com/spring-projects/spring-petclinic.git'
             }
         }
 
