@@ -1,24 +1,32 @@
-node {
-    // Define workspace cleanup
-    stage('Clean Workspace') {
-        echo 'Cleaning workspace...'
-        deleteDir() // Deletes workspace contents
-    }
+pipeline {
+    agent any
 
-    // Checkout source code from Git
-    stage('Checkout') {
-        echo 'Checking out source code...'
-        git branch: 'main', url: 'https://github.com/spring-projects/spring-petclinic.git'
-    }
+    stages {
+        stage('Clean Workspace') {
+            steps {
+                echo 'Cleaning workspace...'
+                deleteDir()
+            }
+        }
 
-    // Compile the code
-    stage('Build') {
-        echo 'Building the project...'
-        try {
-          bat 'mvnw clean install -DskipTests' 
-        } catch (Exception e) {
-            error "Build failed: ${e.message}"
+        stage('Checkout') {
+            steps {
+                echo 'Checking out source code...'
+                git branch: 'main', url: 'https://github.com/spring-projects/spring-petclinic.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    echo 'Building the project...'
+                    try {
+                        bat 'mvnw clean install -DskipTests'
+                    } catch (Exception e) {
+                        error "Build failed: ${e.message}"
+                    }
+                }
+            }
         }
     }
-
-  }
+}
